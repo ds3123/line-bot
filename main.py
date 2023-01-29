@@ -42,6 +42,7 @@ def get_message( request : MessageRequest ) :
             return skill( request )
 
     request.intent = '{not_match}'
+
     return skills['{not_match}']( request )
 
 
@@ -52,17 +53,16 @@ async def callback( request : Request , x_line_signature : str = Header( None ) 
 
     try :
 
-        handler.handle( body.decode("utf-8") , x_line_signature )
+        handler.handle( body.decode( "utf-8" ) , x_line_signature )
 
     except InvalidSignatureError :
 
-        raise HTTPException( status_code=400 , detail="Invalid signature. Please check your channel access token/channel secret.")
+        raise HTTPException( status_code = 400 , detail = "Invalid signature. Please check your channel access token/channel secret." )
 
     return 'OK'
 
 
 # -----------------------
-
 
 # 文字訊息
 @handler.add( event = MessageEvent , message = TextMessage )

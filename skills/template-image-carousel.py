@@ -17,15 +17,15 @@ def get( message_request : MessageRequest ) :
                         # 每個 column 中的 actions ，數目要一樣
                         columns = [
                                     ImageCarouselColumn(
-                                                        image_url = 'https://via.placeholder.com/300x300/333.png/fff',
+                                                        image_url = 'https://s.yimg.com/ny/api/res/1.2/M4Gi7EZWnxMmnIYVnDH7fQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtoPTY0MDtjZj13ZWJw/https://s.yimg.com/os/creatr-uploaded-images/2022-10/24067f40-4488-11ed-9bb7-657909af0c08',
                                                         action    = PostbackAction(
-                                                                                    label        = 'postback1',
+                                                                                    label        = '預 約',
                                                                                     display_text = 'postback text1',
                                                                                     data         = 'action=buy&itemid=1'
                                                                                    )
                                     ),
                                     ImageCarouselColumn(
-                                                        image_url = 'https://via.placeholder.com/300x300/333.png/fff',
+                                                        image_url = 'https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2021/12/30/draft/14964211.jpg&x=0&y=0&sw=0&sh=0&sl=W&fw=800&exp=3600&w=465&nt=1',
                                                         action    = PostbackAction(
                                                                                     label        = 'postback2',
                                                                                     display_text = 'postback text2',
