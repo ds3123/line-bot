@@ -2,7 +2,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.params import Header
 
-
 # Line SDK
 from linebot import LineBotApi , WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -14,6 +13,9 @@ import re
 from pathlib import Path
 from dotenv import load_dotenv
 from starlette.requests import Request
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 # 自訂
 from models.message_request import MessageRequest
@@ -21,8 +23,31 @@ from skills import *
 from skills import skills
 
 
+origins = [
+            # < 允許特定網域 >
+            "http://demo02.cchouse.com.tw",
+
+           ]
+
+
+app.add_middleware(
+
+    CORSMiddleware,
+    allow_origins     = origins ,
+    allow_credentials = True ,     # 允許前端攜帶 Cookie ( Axios 也有類似設定 ) --> for JWT
+    allow_methods     = ["*"] ,
+    allow_headers     = ["*"] ,
+
+)
+
+
+
+
+
+
 # FastAPI 物件
 app = FastAPI()
+
 
 # 載入環境變數
 load_dotenv()

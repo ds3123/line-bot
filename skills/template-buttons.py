@@ -22,8 +22,8 @@ def get( message_request : MessageRequest ) :
                                         text  = '{template-carousel}'
                                     ) ,
                                     MessageAction(
-                                        label='image-carousel',
-                                        text='{template-image-carousel}'
+                                        label = 'image-carousel',
+                                        text  = '{template-image-carousel}'
                                     ),
                                   ]
                    )
