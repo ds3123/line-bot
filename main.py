@@ -23,17 +23,17 @@ from skills import *
 from skills import skills
 
 
-origins = [
-            # < 允許特定網域 >
-            "http://demo02.cchouse.com.tw",
-
-           ]
+# origins = [
+#             # < 允許特定網域 >
+#             "http://demo02.cchouse.com.tw",
+#
+#            ]
 
 
 app.add_middleware(
 
     CORSMiddleware,
-    allow_origins     = origins ,
+    allow_origins     = ["*"] ,
     allow_credentials = True ,     # 允許前端攜帶 Cookie ( Axios 也有類似設定 ) --> for JWT
     allow_methods     = ["*"] ,
     allow_headers     = ["*"] ,
