@@ -2,7 +2,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.params import Header
 
-
 # Line SDK
 from linebot import LineBotApi , WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -23,6 +22,7 @@ from skills import skills
 
 # FastAPI 物件
 app = FastAPI()
+
 
 # 載入環境變數
 load_dotenv()
