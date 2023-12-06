@@ -14,7 +14,6 @@ def get( message_request : MessageRequest ) :
         alt_text = 'ImageCarousel template',
         template = ImageCarouselTemplate(
 
-
                         # 預約
                         columns = [
 

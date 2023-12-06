@@ -1,11 +1,13 @@
 # FastAPI
 from fastapi import FastAPI, HTTPException
 from fastapi.params import Header
+from typing import Any
 
 # Line SDK
 from linebot import LineBotApi , WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent , PostbackEvent , TextMessage , ImageMessage , FileMessage , LocationMessage
+from linebot.models import ( MessageEvent ,  PostbackEvent  , TextMessage  , TextSendMessage , ImageMessage ,
+                             FileMessage  , LocationMessage , FollowEvent  , UnfollowEvent )
 
 # 內建
 import os
@@ -21,26 +23,12 @@ from skills import skills
 from fastapi.middleware.cors import CORSMiddleware
 
 
-
 # FastAPI 物件
 app = FastAPI()
 
 
-app.add_middleware(
-
-    CORSMiddleware,
-    allow_origins     = ["*"]  ,
-    allow_credentials = True ,     # 允許前端攜帶 Cookie ( Axios 也有類似設定 ) --> for JWT
-    allow_methods     = ["*"] ,
-    allow_headers     = ["*"] ,
-
-)
-
-
-
 # 載入環境變數
 load_dotenv()
-
 
 # Token
 line_bot_api = LineBotApi( os.getenv('LINE_CHANNEL_ACCESS_TOKEN') )
@@ -48,11 +36,11 @@ line_bot_api = LineBotApi( os.getenv('LINE_CHANNEL_ACCESS_TOKEN') )
 handler      = WebhookHandler( os.getenv('LINE_CHANNEL_SECRET') )
 
 
-# 匹配函式
-def get_message( request : MessageRequest ) :
+# 根據 api 請求 ( request )，從利用 add_skill 加入的功能 ( skills ) 中，匹配 _ 相關技能( 函式 )
+def get_message( request : MessageRequest ):
 
     for pattern , skill in skills.items() :
-        if re.match( pattern , request.intent ):
+        if re.match( pattern , request.intent ) :
             return skill( request )
 
     request.intent = '{not_match}'
@@ -60,23 +48,23 @@ def get_message( request : MessageRequest ) :
     return skills['{not_match}']( request )
 
 
+# 接收 Line 傳送 POST 請求 -----------------
+
 @app.post("/api/line")
-async def callback( request : Request , x_line_signature : str = Header( None ) ) :
+async def callback( request : Request, x_line_signature: str = Header( None ) ) :
 
     body = await request.body()
 
     try :
-
         handler.handle( body.decode( "utf-8" ) , x_line_signature )
 
     except InvalidSignatureError :
-
-        raise HTTPException( status_code = 400 , detail = "Invalid signature. Please check your channel access token/channel secret." )
+        raise HTTPException( status_code=400, detail="Invalid signature. Please check your channel access token/channel secret.")
 
     return 'OK'
 
 
-# -----------------------
+# < 個類型事件處理 > -----------------------
 
 # 文字訊息
 @handler.add( event = MessageEvent , message = TextMessage )
@@ -92,6 +80,7 @@ def handle_message( event ) :
 
     # 回應訊息
     line_bot_api.reply_message( event.reply_token , func )
+
 
 
 # 圖片訊息
@@ -149,3 +138,27 @@ def handle_message( event ) :
     print( 'params' , event.postback.params )
     print( 'data'   , event.postback.data )
 
+
+# 新增 _ 好友
+@handler.add( event = FollowEvent )
+def handle_message( event ) :
+
+    print( "新增好友" , event )
+
+    # 取得 _ 使用者個人資訊
+    profile = line_bot_api.get_profile( event.source.user_id )
+
+    print( profile.display_name )   # 顯示名稱
+    print( profile.user_id )        # 使用者 id
+    print( profile.picture_url )
+    print( profile.status_message )
+
+    # 回傳 _ 歡迎訊息
+    line_bot_api.reply_message( event.reply_token , TextSendMessage( f'Hi , { profile.display_name }' ) )
+
+
+
+# 刪除 _ 好友
+@handler.add( event = UnfollowEvent )
+def handle_message( event ) :
+    print( "刪除好友" , event )
